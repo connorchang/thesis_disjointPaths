@@ -1,0 +1,63 @@
+public class DirectedEdge
+{
+      private final Vertex v; // edge source
+      private final Vertex w; // edge target
+      private double cost; // edge cost
+      private boolean tag; // for taging shortest edge 
+      
+      public DirectedEdge(Vertex v, Vertex w, double cost)
+      {
+     this.v = v;
+     this.w = w;
+     this.cost = cost;
+     this.tag = false;
+      }
+      
+      
+      public DirectedEdge(Vertex v, Vertex w, double cost, boolean tag)
+      {
+     this.v = v;
+     this.w = w;
+     this.cost = cost;
+     this.tag = tag;
+      }
+      
+
+      public double cost()
+      {
+     return cost;
+      }
+      
+      public int from()
+      {
+     return v.getVertexID();
+      }
+      
+      public int to()
+      {
+     return w.getVertexID();
+      }
+      
+      public String toString()
+      {
+     return String.format("%d->%d %.2f %b", v.getVertexID(), w.getVertexID(), cost, tag);
+      }
+      
+      public void updateCost(double newCost)
+      {
+          this.cost = newCost;
+      }
+          
+      public void tagEdge()
+      {
+          tag = true;
+      }
+      public void untagEdge()
+      {
+          tag = false;
+      }
+      public boolean getTag()
+      {
+          return tag;
+      }
+}

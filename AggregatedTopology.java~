@@ -1,0 +1,27 @@
+public class AggregatedTopology
+{
+
+    private int domainID;
+    private int source;
+    private int dest;
+    private DijkstraSP[][] B2BPath;
+    
+    public AggregatedTopology(int domainID, Bag<DirectedEdge>[] Gmod, int source, int dest, int borderNum)
+    {
+        this.domainID = domainID;
+        this.source = source;
+        this.dest = dest;
+        B2BPath = new DijkstraSP[borderNum][borderNum];
+        
+        for (int k=0 ; k < borderNum; k++){
+          // ModifiedSP(GMod, k, B2BPath);
+        }
+    }
+        
+    public DijkstraSP[][] getAT()
+    {
+        return B2BPath;
+    }
+    
+    
+}

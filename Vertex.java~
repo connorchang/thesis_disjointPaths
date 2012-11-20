@@ -1,0 +1,19 @@
+public class Vertex
+{
+      private final int DomainID;
+      private final int routerType; // 0:border 1:edge 2:status
+      private final int vertexID;
+      
+      public Vertex(int DomainID, int routerType, int vertexID)
+      {
+	    this.DomainID = DomainID;
+	    this.routerType = routerType;
+	    this.vertexID = vertexID;
+      }
+
+      public int getVertexID ()
+      {
+	    return vertexID;
+      }
+      
+}

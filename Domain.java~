@@ -1,0 +1,234 @@
+
+import java.util.*;
+
+public class Domain
+{
+    private final int DomainID;
+    private Graph G;
+    private Bag<DirectedEdge>[] adj;
+    private DijkstraSP[][] borderPath;
+    private AggregatedTopology[][] AT;
+    private int V; // number of vertices
+    private int E;
+    
+    public Domain(int domainID, int V)
+    {
+        DomainID = domainID;
+        this.V = V;
+        for(int v = 0; v < V; v++) {
+            adj[v] = new Bag<DirectedEdge>();
+        }
+     }
+    
+    public Domain(In in) 
+    {
+        DomainID = 0;
+        V = in.readInt();
+        E = in.readInt();
+        adj = (Bag<DirectedEdge>[]) new Bag[V];
+        borderPath = new DijkstraSP[2][2];
+        
+        for(int v = 0; v < V; v++) {
+            adj[v] = new Bag<DirectedEdge>();
+        }
+        
+        
+        System.out.println("E " + E);
+        for (int i = 0; i < E; i++) {
+            int v = in.readInt();
+            Vertex vertexV = new Vertex(0, 0, v);
+            
+            int w = in.readInt();
+            Vertex vertexW = new Vertex(0, 0, w);
+            double cost = in.readDouble();
+            DirectedEdge e = new DirectedEdge(vertexV, vertexW, cost);
+            addEdge(e);
+            
+            //findAggregationTopology(2);
+        }
+    }
+    
+    
+    
+    public int V() 
+    {
+        return V;
+    }
+    
+    public void reverseNegate(DirectedEdge e)
+    {
+         DirectedEdge tmpEdge;
+         removeEdge(e);
+       
+         for ( Iterator<DirectedEdge> EdgeIter = adj[e.to()].iterator(); EdgeIter.hasNext(); ) {
+             tmpEdge = EdgeIter.next();
+             if (tmpEdge.to() == e.from()) {
+                 tmpEdge.updateCost(-e.cost());
+                 //System.out.println( tmpEdge );
+             }
+         }
+    }
+    
+    
+    public boolean oppositeEdges(DirectedEdge e)
+    { 
+        DirectedEdge tmpEdge;
+        
+        for ( Iterator<DirectedEdge> EdgeIter = adj[e.to()].iterator(); EdgeIter.hasNext(); ) {
+            tmpEdge = EdgeIter.next();
+            if (tmpEdge.to() == e.from()) {
+                tmpEdge.untagEdge();
+                return true;
+                //System.out.println( tmpEdge );
+            }
+        }
+        return false;
+    }
+    
+    public void addEdge(DirectedEdge e)
+    {
+        //System.out.println("e.from()" + e.from());
+        adj[e.from()].add(e);
+    }
+    
+    public void removeEdge(DirectedEdge e)
+    {
+        adj[e.from()].remove(e);
+    }
+    
+    public Iterable<DirectedEdge> adj(int v)
+    {
+        return adj[v];
+    }
+    
+    public int outdegree(int v) 
+    {
+        return adj[v].size();
+    }
+    
+    public void get2DisjointPaths(int s, int t)
+    {  
+        int n = s; 
+        DirectedEdge tmpEdge;
+       // path 1 
+        while (n != t) {
+            for ( Iterator<DirectedEdge> EdgeIter = adj[n].iterator(); EdgeIter.hasNext(); ) {
+                tmpEdge = EdgeIter.next();
+                if (tmpEdge.getTag()) {
+                    n = tmpEdge.to();
+                    System.out.println( tmpEdge );
+                    tmpEdge.untagEdge();
+                    break;
+                }
+            }
+        
+        }
+       
+        System.out.println("Path 2 ");
+        n = s;
+        while (n != t) {
+            for ( Iterator<DirectedEdge> EdgeIter = adj[n].iterator(); EdgeIter.hasNext(); ) {
+                tmpEdge = EdgeIter.next();
+                if (tmpEdge.getTag()) {
+                    n = tmpEdge.to();
+                    System.out.println( tmpEdge );
+                    //tmpEdge.untagEdge();
+                    break;
+                }
+            }
+        
+        }
+        
+        
+        
+    }
+    
+//    public void findAggregationTopology(int borderNum) 
+//    {
+//       for (int i = 0; i < borderNum-1; i++) {
+//            for (int j = i+1; j < borderNum; j++) {
+//                borderPath[i][j] = new DijkstraSP(this, i,j);
+//
+//                GMod = reverseNegateGraph(); // reverse edge and negate cost
+//                
+//                // based on modifed graph Gmod
+//                // for each border node, compute the shortest path to the rest border nodes
+//                
+//               AT[i][j] = (new AggregatedTopology(DomainID, Gmod, i, j, borderNum)).getAT();
+//            }
+//        }
+//    }
+//    
+//    public find2DisjointPath(DomainAT[] domainAT)
+//    {
+//        PATH[] disjointPath = new PATH[2];
+//        // PATH object record the explict edges along the path
+//        Graph G = buildGlobalAggregatedTopology(domainAT); // graph consists of all border nodes with cost and inter-domain link
+//        disjointPath[0] = computePath(G, "primary");
+//        
+//        //According to disjoint[0], constructing a modified graph Gmod
+//        Graph GMod = reverseNegate(G, disjointPath[0]);
+//        disjoingPath[1] = computePath(GMod, "secondary");
+//        
+//        
+//        return disjointPath;
+//        
+//    
+//    }
+//    
+    
+    
+    /**
+     * Return all edges in this digraph as an Iterable.
+     * To iterate over the edges in the digraph, use foreach notation:
+     * <tt>for (DirectedEdge e : G.edges())</tt>.
+     */
+    public Iterable<DirectedEdge> edges() {
+        Bag<DirectedEdge> list = new Bag<DirectedEdge>();
+        for (int v = 0; v < V; v++) {
+            for (DirectedEdge e : adj(v)) {
+                list.add(e);
+            }
+        }
+        return list;
+    } 
+    
+    
+    public static void main(String[] args) 
+    {
+        In in = new In(args[0]);
+        Domain G = new Domain(in);
+        int s = Integer.parseInt(args[1]);
+        
+        // compute shortest paths
+        //DijkstraSP sp = new DijkstraSP(G, s, 4);
+        
+        //findAggregationTopology();
+        
+//System.out.println(sp.distTo(4));
+        
+//         for (DirectedEdge e : sp.pathTo(4)) {
+//                        StdOut.print(e + "   ");
+//         }
+        
+    }
+    
+    
+    /**
+     * Return a string representation of this graph.
+     */
+    // public String toString() {
+    // String NEWLINE = System.getProperty("line.separator");
+    // StringBuilder s = new StringBuilder();
+    // s.append(V + " " + E + NEWLINE);
+    // for (int v = 0; v < V; v++) {
+    //    s.append(v + ": ");
+    //    for (DirectedEdge e : adj[v]) {
+    //   s.append(e + "  ");
+    //    }
+    //    s.append(NEWLINE);
+    // }
+    // return s.toString();
+    // }
+    
+}
