@@ -39,6 +39,11 @@ public class DirectedEdge
             return w.getVertexID();
     }
     
+    public void setDomain(int domain)
+    {
+        v.setDomain(domain);
+        w.setDomain(domain);
+    }
     public Vertex getFromVertex()
     {
         return v;

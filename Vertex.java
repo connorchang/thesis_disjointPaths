@@ -23,6 +23,10 @@ public class Vertex
         return vertexID;
     }
     
+    public void setDomain(int domainID)
+    {
+        this.DomainID = domainID;
+    }
     public int getGlobalID()
     {
         return globalID;

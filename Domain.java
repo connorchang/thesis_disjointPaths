@@ -177,23 +177,39 @@ public class Domain
         DirectedEdge tmpEdge;
         // path 1 
         
-        System.out.println("disjoint path");
+        System.out.println("\nFirst Disjoint Path ");
         for (DirectedEdge e : saveEdges) {
            if (nextVertex.getDomainID() == t.getDomainID() && nextVertex.getVertexID() == t.getVertexID()) break;
            
            
            
             for (DirectedEdge e1 : saveEdges) { 
-                if (e1.getFromVertex().getDomainID() == nextVertex.getDomainID() && e.getFromVertex().getVertexID() == nextVertex.getVertexID()) {
+                if (e1.getTag() && e1.getFromVertex().getDomainID() == nextVertex.getDomainID() && e1.getFromVertex().getVertexID() == nextVertex.getVertexID()) {
                     System.out.println(e1 + " ");
                     e1.untagEdge();
                     nextVertex = e1.getToVertex();
-                    System.out.println(nextVertex.getDomainID() + " " + nextVertex.getVertexID());
+                    //System.out.println(nextVertex.getDomainID() + " " + nextVertex.getVertexID());
                 }
             }
         }
         
+        System.out.println("\nSecond Disjoint path");
+        nextVertex = s;
         
+        for (DirectedEdge e : saveEdges) {
+           if (nextVertex.getDomainID() == t.getDomainID() && nextVertex.getVertexID() == t.getVertexID()) break;
+           
+           
+           
+            for (DirectedEdge e1 : saveEdges) { 
+                if (e1.getTag() && e1.getFromVertex().getDomainID() == nextVertex.getDomainID() && e1.getFromVertex().getVertexID() == nextVertex.getVertexID()) {
+                    System.out.println(e1 + " ");
+                    e1.untagEdge();
+                    nextVertex = e1.getToVertex();
+                    //System.out.println(nextVertex.getDomainID() + " " + nextVertex.getVertexID());
+                }
+            }
+        }
 //        
 //        
 //        while (n != t) {
@@ -462,13 +478,8 @@ public class Domain
                 }
             }
         }
-        
-        System.out.println("*****************************");
-        
-        for (DirectedEdge e: saveEdges) {
-            System.out.println(e);
-        }
-       globalG.get2DisjointPaths(globalVertex.get(8), globalVertex.get(11), saveEdges);
+    
+        globalG.get2DisjointPaths(globalVertex.get(8), globalVertex.get(11), saveEdges);
         
     }
 
@@ -477,9 +488,7 @@ public class Domain
         //Vector<DirectedEdge> v = new Vector<DirectedEdge>();
         Domain G = first.getDomain();
         
-        for(DirectedEdge e: G.edges()) {
-            System.out.println(e.getFromVertex().getDomainID() + "&&&&&&&&&&&&&&&" );
-        }
+    
         
 //        System.out.println("\nfirst");
         for (DirectedEdge e : first.pathTo(first.getT())) {
@@ -506,8 +515,6 @@ public class Domain
         
         for (DirectedEdge e : G.edges()) {
             if (e.cost() < 0) {
-                System.out.println(e.getFromVertex().getDomainID() + " &&&&&&&&&&&&&&&&&&&&&&&&&&&& ");
-                
                 G.addEdge(new DirectedEdge(e.getToVertex(), e.getFromVertex(), -e.cost(), true));
             }
         }
@@ -516,6 +523,7 @@ public class Domain
         
         for (DirectedEdge e : G.edges()) {
             if (e.getTag()) {
+                e.setDomain(G.getDomainID());
                 save.add(e);
                 System.out.println(e + " ");
                 
