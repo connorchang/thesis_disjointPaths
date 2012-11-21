@@ -4,9 +4,10 @@ public class AggregatedTopology
     private Domain G;
     private AR ar[][];
     private int borderNum;
-     
     
-    public AggregatedTopology(Domain G) {
+    
+    public AggregatedTopology(Domain G) 
+    {
         this.G = G;
         ar = new AR[G.borderNodes.length][G.borderNodes.length];
         borderNum = G.borderNodes.length;
@@ -19,18 +20,14 @@ public class AggregatedTopology
     
     public void findAggregationTopology()
     {
-        System.out.println("length " + G.borderNodes.length);
         for ( int i = 0; i < G.borderNodes.length-1; i++) {
             for ( int j = i + 1; j < G.borderNodes.length; j++) {
-                System.out.println("\ns = " + G.borderNodes[i] + " t = " + G.borderNodes[j]);
+                
                 try {
                     Domain GCopy = G.copyDomain();
-                    
                     DijkstraSP sp = new DijkstraSP(GCopy, GCopy.borderNodes[i], GCopy.borderNodes[j]);
-    
+                    
                     for (DirectedEdge e : sp.pathTo(GCopy.borderNodes[j])) {
-                        //StdOut.print(e + "   "); 
-                        //e.tagEdge();
                         GCopy.reverseNegate(e);
                     }
                     
@@ -41,7 +38,7 @@ public class AggregatedTopology
                             spmodArray[x][y] = new DijkstraSPMod(GCopy, GCopy.borderNodes[x], GCopy.borderNodes[y]);
                         }
                     }
-                        
+                    
                     
                     if (i != j)
                         ar[i][j] = new AR(G.borderNodes[i], G.borderNodes[j], sp, spmodArray);
@@ -61,7 +58,7 @@ public class AggregatedTopology
 //                                    System.out.println("distTo = " + ar[i][j].spmodArray[x][y].distTo(ar[i][j].spmodArray[x][y].dest())); 
 //                            }
 //                        }
-                       
+                    
 //                        
 //                        In in = new In();
 //                        in.readInt();
@@ -74,35 +71,29 @@ public class AggregatedTopology
         }
     }
     
-
+    
     public int getBorderNum()
     {
         return borderNum;
     }
-   
-    public void find2DisjointPath()
-    {
-          
-      }
-      
-      public AR getAR(int i, int j)
-      {
-          return ar[i][j];
-      
-      }
-      
-      public AR[][] getAR()
-      {
-          return ar;
-      }
     
-      public class AR
+    public AR getAR(int i, int j)
+    {
+        return ar[i][j];
+    }
+    
+    public AR[][] getAR()
+    {
+        return ar;
+    }
+    
+    public class AR
     {
         private int s;
         private int t;
         private DijkstraSP sp;
         private DijkstraSPMod spmodArray[][];
-    
+        
         private AR(int s, int t, DijkstraSP sp, DijkstraSPMod[][] spmodArray) 
         {
             this.s = s;

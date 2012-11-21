@@ -117,12 +117,12 @@ public DijkstraSPMod(Domain G, int s, int t) {
         }
     }
 
-    public int dest()
+    public int getT()
     {
         return t;
     }
     
-    public int source()
+    public int getS()
     {
         return s;
     }
